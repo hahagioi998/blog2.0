@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbz.blog.mapper.TTagMapper">
+    <!--    根据标签id查询博客相关信息-->
+    <select id="findBlogTagByPage" resultType="com.hbz.blog.entity.BlogAndTag">
+           SELECT b.id,b.create_time,b.description,b.first_picture,b.flag,b.title,t.id AS tid,t.name AS tname
+		            FROM t_blog b LEFT JOIN t_blog_tags bt ON b.id = bt.blogs_id
+                    LEFT JOIN t_tag t ON t.id = bt.tags_id
+                    WHERE t.id = #{tagId}
+                    GROUP BY b.id DESC
+    </select>
+
+<!-- 查询与标签相关的博客数量-->
+    <select id="countTagBlog" resultType="com.hbz.blog.entity.BlogTagCount">
+        SELECT t.name,t.id,COUNT(*) AS COUNT
+            FROM t_blog_tags bt
+            LEFT JOIN t_blog b ON b.id = bt.blogs_id
+            LEFT JOIN t_tag t ON t.id = bt.tags_id
+            WHERE bt.blogs_id = b.id AND t.id=bt.tags_id GROUP BY t.id DESC
+    </select>
+</mapper>
